@@ -202,10 +202,14 @@ void Hardwaredriver::send_broadcast(const wchar_t* broadcastIP, int targetPort) 
 }
 
 ////////////////////////////////////////////// Hardware API for receiver ///////////////////////////////////////////
-// vector<unsigned char> receiveMessage(int localport, int bufferSize)
-// return a vecotr of unsigned char for about  1315 bytes
-bool** Hardwaredriver::getStepped() {
 
+void Hardwaredriver::setMessage(const char* msg) {
+    receivedMessage = std::string(msg);
+}
+
+// vector<unsigned char> receiveMessage(int localport, int bufferSize)
+// return a vector of unsigned char for about  1315 bytes
+bool** Hardwaredriver::getStepped() {
     // Create a 2D dynamic array to store the received data
     bool** received_data = new bool*[max_rows];
 
@@ -216,46 +220,43 @@ bool** Hardwaredriver::getStepped() {
         }
     }
 
-    // /*
-    int temp_flag = 3;
-    for (int i = 0; i < num_of_controller_used; i++) {
+    /*
 
-        // Receive the message
-        std::vector<int> received_message = receiveBroadcastSignal();
+    // Use the stored message
+    if (!receivedMessage.empty()) {
+        // Process the receivedMessage as needed
+        // For example, convert it to a vector of integers
+        std::vector<int> received_message(receivedMessage.begin(), receivedMessage.end());
 
-        // change received_message[1] to decimal and use a variable to store it
-        int receiver_no = static_cast<int>(received_message[1]);
+        int temp_flag = 3;
+        for (int i = 0; i < num_of_controller_used; i++) {
+            // change received_message[1] to decimal and use a variable to store it
+            int receiver_no = static_cast<int>(received_message[1]);
 
-        // drop the first 2 bytes
-        received_message.erase(received_message.begin(), received_message.begin() + 2);
+            // drop the first 2 bytes
+            received_message.erase(received_message.begin(), received_message.begin() + 2);
 
-        // bug !!!
-        // need to fill in different space
-        // for each port
-        for (int j = 0; j < breakpoints_length[i]; j++) {
-            for (int k = 0; k < max_cols; k++) {
-                int receive_message_no = j * 170 + k;
-                 //if the bit is 0xab, set the corresponding LED to be true
-                 if (received_message[receive_message_no] == 0xab) {
-                     received_data[j][k] = true;
-                 } else {
-                     received_data[j][k] = false;
-                 }
-                //received_data[j][k] = received_message[receive_message_no];
+            // bug !!!
+            // need to fill in different space
+            // for each port
+            for (int j = 0; j < breakpoints_length[i]; j++) {
+                for (int k = 0; k < max_cols; k++) {
+                    int receive_message_no = j * 170 + k;
+                    // if the bit is 0xab, set the corresponding LED to be true
+                    if (received_message[receive_message_no] == 0xab) {
+                        received_data[j][k] = true;
+                    } else {
+                        received_data[j][k] = false;
+                    }
+                }
             }
         }
     }
 
-    // // Create a const version of the array
-    // const bool** const_received_data = const_cast<const bool**>(received_data);
-
-
-    // */
+    */
 
     // return the received_data
     return received_data;
-
-    
 }
 
 //////////////////////////////////////////// Hardware API for controller ////////////////////////////////////////////

@@ -149,7 +149,7 @@ UNITY_API void init(int m, int n, int numPorts, int length, int controller_used,
     // Receiver info
     int localPort = 8200;
     int bufferSize = 1500;
-    int num_breakpoints = 1;
+    int num_breakpoints = controller_used;
 
     instance = new Hardwaredriver(controller_used, maxLength, numPorts, portsDistribution, 
                                     num_breakpoints, targetIP, targetPort, localPort, bufferSize);
@@ -276,21 +276,15 @@ UNITY_API void displayFrameUnity(int const* const* frame) {
     // cout << "finished" << endl;
 }
 
-UNITY_API bool ** getSensors() {
-    bool** hardwareMatrix;
+UNITY_API bool ** getSensors(bool ** hardwareMatrix) {
+    //bool** hardwareMatrix = unityMatrix;
+
     /*
     XXX: TO BE IMPLEMENTED
     call the hardware function to get the sensors
     */
-    hardwareMatrix = instance->getStepped();
-
+    //hardwareMatrix = instance->getStepped();
+    
+	//return hardwareMatrix; 
     return returnUnityMatrix(hardwareMatrix);
-}
-
-UNITY_API void ReceiveMessageFromUnity(const char* message)
-{
-    // Process the received message
-    std::cout << "Message received from Unity: " << message << std::endl;
-
-    // Add your processing logic here
 }
